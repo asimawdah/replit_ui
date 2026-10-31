@@ -40,6 +40,15 @@ class TopBar extends StatelessWidget {
       ),
       child: Row(
         children: [
+          if (mobile)
+            MEIconButton(
+              icon: Icon(Icons.menu_rounded, color: colors.onSurface),
+              variant: MEButtonVariant.text,
+              onPressed: onBrowse,
+              size: MEButtonSize.extraSmall,
+              tooltip: 'Browse components',
+            ),
+          if (mobile) const SizedBox(width: 8),
           const ReplitLogo(size: 16),
           SizedBox(width: mobile ? 8 : 9),
           Text(
@@ -68,6 +77,8 @@ class TopBar extends StatelessWidget {
             ),
           ],
           const Spacer(),
+          if (mobile) _CodeToggle(active: false, onTap: onShowCode),
+          if (mobile) const SizedBox(width: 8),
           if (mobile)
             MEIconButton(
               icon: Icon(
@@ -89,36 +100,7 @@ class TopBar extends StatelessWidget {
                   ? 'Switch to light theme'
                   : 'Switch to dark theme',
             ),
-          if (mobile)
-            PopupMenuButton<_MobileMenuAction>(
-              tooltip: 'Open playground menu',
-              icon: const Icon(Icons.menu_rounded),
-              onSelected: (action) {
-                switch (action) {
-                  case _MobileMenuAction.browse:
-                    onBrowse();
-                  case _MobileMenuAction.code:
-                    onShowCode();
-                }
-              },
-              itemBuilder: (context) => const [
-                PopupMenuItem(
-                  value: _MobileMenuAction.browse,
-                  child: _MobileMenuItem(
-                    icon: Icons.grid_view_rounded,
-                    label: 'Browse components',
-                  ),
-                ),
-                PopupMenuItem(
-                  value: _MobileMenuAction.code,
-                  child: _MobileMenuItem(
-                    icon: Icons.code_rounded,
-                    label: 'View code',
-                  ),
-                ),
-              ],
-            )
-          else ...[
+          if (!mobile) ...[
             ShellSegmented<ThemeMode>(
               options: const [
                 (ThemeMode.light, 'Light'),
@@ -136,20 +118,6 @@ class TopBar extends StatelessWidget {
       ),
     );
   }
-}
-
-enum _MobileMenuAction { browse, code }
-
-class _MobileMenuItem extends StatelessWidget {
-  const _MobileMenuItem({required this.icon, required this.label});
-
-  final IconData icon;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) => Row(
-    children: [Icon(icon, size: 18), const SizedBox(width: 12), Text(label)],
-  );
 }
 
 class ShellSegmented<T> extends StatelessWidget {
