@@ -16,3 +16,6 @@ cd "$(dirname "$0")/.."
 rm -rf public/playground
 mkdir -p public
 cp -R ../playground/build/web public/playground
+PLAYGROUND_BUILD_ID="$(date -u +%Y%m%d%H%M%S)"
+sed -i "s|src=\"flutter_bootstrap.js\"|src=\"flutter_bootstrap.js?v=${PLAYGROUND_BUILD_ID}\"|" public/playground/index.html
+sed -i "s|\"jsSupportRuntimePath\":\"main.dart.mjs\"|\"jsSupportRuntimePath\":\"main.dart.mjs?v=${PLAYGROUND_BUILD_ID}\"|" public/playground/flutter_bootstrap.js
