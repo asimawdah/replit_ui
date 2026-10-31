@@ -29,7 +29,6 @@ packages/replit_ui/example/env.json
 docs/node_modules/
 docs/dist/
 docs/.astro/
-docs/public/playground/
 docs/public/api/
 
 # Editor and OS files
