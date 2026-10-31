@@ -8,7 +8,7 @@ import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
 enum PlaygroundItem {
   fullChat(
     'Full Chat',
-    PhosphorIconsRegular.sunHorizon,
+    PhosphorIconsRegular.chat,
     'full_chat_screen.dart',
     isExample: true,
   ),
