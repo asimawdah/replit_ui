@@ -19,7 +19,7 @@ The theme, the conversation components (message, thread, streaming text, actions
 - Root `pubspec.yaml` is the pub workspace (members under `workspace:`) with the melos scripts; root `analysis_options.yaml` (very_good_analysis) governs workspace tools without a nearer configuration.
 - `packages/replit_ui/` — the published package: UI components in `lib/src/`, the optional streaming SDK in `lib/src/ui_design/`, `example/`, assets, maintainer tools under `tool/`, and its own flutter_lints configuration.
 - `playground/` — the Replit UI Playground: a full Flutter app and workspace member depending on `replit_ui: ^0.4.0`. Use it to demo and manually exercise components (every component has a stage demo, with variant pills and code snippets).
-- `docs/` — the Astro site behind replit_ui.asimawdah.com. `contracts/` — the SDK wire contract.
+- `docs/` — the Astro site behind replit.asimawdah.com. `contracts/` — the SDK wire contract.
 
 ## Commands
 

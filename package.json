@@ -1,0 +1,11 @@
+{
+  "name": "replit.asimawdah.com",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Replit UI documentation site — Astro/Starlight static site served at replit.asimawdah.com",
+  "scripts": {
+    "build": "cd docs && npm run build",
+    "dev": "cd docs && npm run dev",
+    "preview": "cd docs && npm run preview"
+  }
+}

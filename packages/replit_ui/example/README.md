@@ -22,7 +22,7 @@ flutter run --dart-define-from-file=env.json
 With no key, the app still runs and shows the normal error state after a send.
 
 For a live tour of every component, open the hosted
-[playground](https://replit_ui.asimawdah.com/playground) or run it from the repository:
+[playground](https://replit.asimawdah.com/playground) or run it from the repository:
 
 ```bash
 cd playground && flutter run -d chrome

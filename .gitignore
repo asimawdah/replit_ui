@@ -38,3 +38,8 @@ docs/public/api/
 *.ipr
 *.iws
 .idea/
+
+# Server
+Docker
+docker-compose.yaml
+deploy/

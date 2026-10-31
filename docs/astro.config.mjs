@@ -29,7 +29,7 @@ const playgroundDevIndex = {
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://replit_ui.asimawdah.com',
+	site: 'https://replit.asimawdah.com',
 	// ReplitChatScreen became ReplitChatView in 0.2.0; keep the old page URL alive.
 	redirects: {
 		'/components/chat-screen': '/components/chat-view',
@@ -47,7 +47,7 @@ export default defineConfig({
 				// of the OG/Twitter tags; the image is ours to provide.
 				{
 					tag: 'meta',
-					attrs: { property: 'og:image', content: 'https://replit_ui.asimawdah.com/og.png' },
+					attrs: { property: 'og:image', content: 'https://replit.asimawdah.com/og.png' },
 				},
 				{ tag: 'meta', attrs: { property: 'og:image:width', content: '1200' } },
 				{ tag: 'meta', attrs: { property: 'og:image:height', content: '630' } },
@@ -60,7 +60,7 @@ export default defineConfig({
 				},
 				{
 					tag: 'meta',
-					attrs: { name: 'twitter:image', content: 'https://replit_ui.asimawdah.com/og.png' },
+					attrs: { name: 'twitter:image', content: 'https://replit.asimawdah.com/og.png' },
 				},
 			],
 			components: {

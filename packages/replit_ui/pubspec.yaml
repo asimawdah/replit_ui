@@ -1,10 +1,10 @@
 name: replit_ui
 description: Flutter UI components and optional streaming AI chat providers for Gemini, OpenAI and Claude.
 version: 0.4.0
-homepage: https://replit_ui.asimawdah.com/
+homepage: https://replit.asimawdah.com/
 repository: https://github.com/asimawdah/replit_ui/tree/main/packages/replit_ui
 issue_tracker: https://github.com/asimawdah/replit_ui/issues
-documentation: https://replit_ui.asimawdah.com/
+documentation: https://replit.asimawdah.com/
 topics:
   - ai
   - chat

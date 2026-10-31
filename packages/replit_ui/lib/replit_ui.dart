@@ -1,4 +1,4 @@
-/// [Replit UI](https://replit_ui.asimawdah.com/) is an open-source Flutter library for
+/// [Replit UI](https://replit.asimawdah.com/) is an open-source Flutter library for
 /// chat interfaces, with optional streaming providers and tool execution.
 ///
 /// The UI components render state and report intent through callbacks.

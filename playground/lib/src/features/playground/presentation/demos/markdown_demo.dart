@@ -95,7 +95,7 @@ Inline code wraps as one chip: `ReplitMarkdown(text: reply, isStreaming: generat
 
 ---
 
-Everything else — the [docs](https://replit_ui.asimawdah.com) have the full dialect, including what stays deliberately literal.
+Everything else — the [docs](https://replit.asimawdah.com) have the full dialect, including what stays deliberately literal.
 ''';
 
 const String _tables = '''
@@ -119,15 +119,15 @@ Alignment comes from the delimiter row — left, right, left. Cells carry inline
 ''';
 
 const String _links = '''
-Links report **intent**: try [the docs](https://replit_ui.asimawdah.com), the [GitHub repo](https://github.com/asimawdah/replit_ui), or the autolink <https://replit_ui.asimawdah.com> — the package styles the label, hands the host the href, and launches nothing itself.
+Links report **intent**: try [the docs](https://replit.asimawdah.com), the [GitHub repo](https://github.com/asimawdah/replit_ui), or the autolink <https://replit.asimawdah.com> — the package styles the label, hands the host the href, and launches nothing itself.
 
-Bare URLs autolink with GFM's trimming: https://replit_ui.asimawdah.com, the parenthesized https://en.wikipedia.org/wiki/Dart_(programming_language), and www.example.com; a trailing period stays prose: https://flutter.dev.
+Bare URLs autolink with GFM's trimming: https://replit.asimawdah.com, the parenthesized https://en.wikipedia.org/wiki/Dart_(programming_language), and www.example.com; a trailing period stays prose: https://flutter.dev.
 
 Without an `onLinkTap`, links render as plain prose — never a styled-but-dead affordance:
 ''';
 
 const String _linksPlain = '''
-The same [docs](https://replit_ui.asimawdah.com) link and the same [repo](https://github.com/asimawdah/replit_ui) link, with no handler wired.
+The same [docs](https://replit.asimawdah.com) link and the same [repo](https://github.com/asimawdah/replit_ui) link, with no handler wired.
 ''';
 
 /// Stage demo for `ReplitMarkdown` — the typeset document, the streaming

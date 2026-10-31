@@ -5,8 +5,8 @@
 <h1 align="center">replit_ui</h1>
 
 <p align="center">
-  📚 <a href="https://replit_ui.asimawdah.com/">Documentation</a>
-  · 🧩 <a href="https://replit_ui.asimawdah.com/playground">Playground</a>
+  📚 <a href="https://replit.asimawdah.com/">Documentation</a>
+  · 🧩 <a href="https://replit.asimawdah.com/playground">Playground</a>
   · 📦 <a href="https://pub.dev/packages/replit_ui">pub.dev</a>
 </p>
 
@@ -23,7 +23,7 @@ model-neutral UI components and an optional streaming SDK.
 |---|---|---|
 | [`packages/replit_ui`](packages/replit_ui) | Chat UI components and optional streaming providers for Gemini, OpenAI-compatible APIs and Claude | [![pub package](https://img.shields.io/pub/v/replit_ui.svg)](https://pub.dev/packages/replit_ui) |
 
-Also here: [`playground/`](playground), every component on a stage, hosted at [replit_ui.asimawdah.com/playground](https://replit_ui.asimawdah.com/playground); [`docs/`](docs), the site; [`contracts/`](contracts), the SDK wire contract.
+Also here: [`playground/`](playground), every component on a stage, hosted at [replit.asimawdah.com/playground](https://replit.asimawdah.com/playground); [`docs/`](docs), the site; [`contracts/`](contracts), the SDK wire contract.
 
 ## Development
 

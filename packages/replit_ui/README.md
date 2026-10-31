@@ -12,14 +12,14 @@
 </p>
 
 <p align="center">
-  📚 <a href="https://replit_ui.asimawdah.com/">Documentation</a>
-  · 🧩 <a href="https://replit_ui.asimawdah.com/playground">Playground</a>
+  📚 <a href="https://replit.asimawdah.com/">Documentation</a>
+  · 🧩 <a href="https://replit.asimawdah.com/playground">Playground</a>
   · 🤓 <a href="https://pub.dev/documentation/replit_ui/latest/">API Reference</a>
-  · 🗺️ <a href="https://replit_ui.asimawdah.com/roadmap">Roadmap</a>
+  · 🗺️ <a href="https://replit.asimawdah.com/roadmap">Roadmap</a>
 </p>
 
 <p align="center">
-<a href="https://replit_ui.asimawdah.com/">Replit UI</a> is an open-source Flutter package for production-grade chat interfaces, with an optional streaming SDK.
+<a href="https://replit.asimawdah.com/">Replit UI</a> is an open-source Flutter package for production-grade chat interfaces, with an optional streaming SDK.
 </p>
 
 ![The replit_ui chat surface](assets/chat_zero_light.png)
@@ -33,30 +33,30 @@
 
 | Component | What it does |
 |---|---|
-| [`ReplitChatView`](https://replit_ui.asimawdah.com/components/chat-view) | The full chat surface: bounded thread over a composer, centred at a readable width, with a zero state (greeting, lifted composer, starters), a jump-to-latest button, and drag-and-drop with a washed invitation overlay (web) |
-| [`ReplitThread`](https://replit_ui.asimawdah.com/components/message-thread) | Scrollable conversation: reads from the top, anchoring to the newest message once it outgrows the viewport; text selects across turns and copies with its line breaks |
-| [`ReplitThreadList`](https://replit_ui.asimawdah.com/components/thread-list) | Conversation history for a side panel — host-labeled sections, single selection by id, unread and pinned marks |
-| [`ReplitMessage`](https://replit_ui.asimawdah.com/components/message-thread) | One turn — ink-wash user bubble, plain assistant, error bubble, typed content parts |
-| [`ReplitStreamingText`](https://replit_ui.asimawdah.com/components/streaming-text) | Animated text reveal while a reply arrives |
-| [`ReplitThinkingIndicator`](https://replit_ui.asimawdah.com/components/thinking-indicator) | Animated Replit mark with a shimmering label |
-| [`ReplitShimmerText`](https://replit_ui.asimawdah.com/components/shimmer-text) | Sweeping text highlight, static once settled |
-| [`ReplitCodeBlock`](https://replit_ui.asimawdah.com/components/code-block) | Fenced code with built-in synchronous highlighting, a header label, and a copy affordance — languages host-extensible |
-| [`ReplitMarkdown`](https://replit_ui.asimawdah.com/components/markdown) | Assistant prose typeset from a built-in parser — headings, emphasis, lists, quotes, tables, links, and fences composing the code block; assistant turns render it by default and it streams gracefully |
-| [`ReplitErrorState`](https://replit_ui.asimawdah.com/components/error-state) | Failure card with a host-written message and retry pill — failed turns render it automatically |
-| [`ReplitConfirmation`](https://replit_ui.asimawdah.com/components/confirmation) | Approval card — an asterisk-marked request with approve and reject buttons that settles into the outcome; confirmation parts render it in a thread |
-| [`ReplitToast`](https://replit_ui.asimawdah.com/components/toast) | Floating notice: a glyph, one wrapping line and a cross on a frosted card; `showReplitToast` floats it in the nearest Overlay, stacked and auto-dismissing, with a handle to dismiss it early |
-| [`ReplitTool`](https://replit_ui.asimawdah.com/components/tool) | Tool-call card: one status mark that settles from a turning asterisk into a check or an error glyph, the call's title and primary argument, and its input and output behind a disclosure; tool parts render it in a thread |
-| [`ReplitMessageActions`](https://replit_ui.asimawdah.com/components/message-actions) | Copy / regenerate / edit / feedback row under a message |
-| [`ReplitComposer`](https://replit_ui.asimawdah.com/components/composer) | Multiline input with send/stop, attachments strip, the platform's file dialog (`showReplitAttachmentPicker` from your own menu, or a built-in attach button), image paste and card-scoped drop (web), and leading/trailing action slots; a full card, or a compact single-row pill that opens into it as the draft grows |
-| [`ReplitMenu`](https://replit_ui.asimawdah.com/components/menu) | Icon-triggered menu with groups, submenus, and toggles — anchored card on desktop, bottom sheet on phones |
-| [`ReplitModelSelector`](https://replit_ui.asimawdah.com/components/model-selector) | Model picker with effort and overflow submenus, sheet on phones |
-| [`ReplitPill`](https://replit_ui.asimawdah.com/components/pill) | Removable pill for an enabled tool or mode in the composer's action row — label auto-drops on phones |
-| [`ReplitAttachmentGroup`](https://replit_ui.asimawdah.com/components/attachments) | Image and file tiles with a type pill |
-| [`ReplitAttachmentPreview`](https://replit_ui.asimawdah.com/components/attachments) | Full-screen image viewer with zoom and paging |
-| [`ReplitDropTarget`](https://replit_ui.asimawdah.com/components/chat-view) | File-drop detection for any subtree (web) — decoded attachments out, hover state for your own treatment |
-| [`ReplitSuggestion`](https://replit_ui.asimawdah.com/components/suggestions) / [`ReplitSuggestionGroup`](https://replit_ui.asimawdah.com/components/suggestions) | Prompt starters — plain or outlined; scroll, wrap, or column layouts |
-| [`ReplitGreeting`](https://replit_ui.asimawdah.com/components/greeting) | Zero-state headline |
-| [`ReplitTheme`](https://replit_ui.asimawdah.com/theming) | Design tokens (colors and typography) as a `ThemeExtension`, with light and dark presets |
+| [`ReplitChatView`](https://replit.asimawdah.com/components/chat-view) | The full chat surface: bounded thread over a composer, centred at a readable width, with a zero state (greeting, lifted composer, starters), a jump-to-latest button, and drag-and-drop with a washed invitation overlay (web) |
+| [`ReplitThread`](https://replit.asimawdah.com/components/message-thread) | Scrollable conversation: reads from the top, anchoring to the newest message once it outgrows the viewport; text selects across turns and copies with its line breaks |
+| [`ReplitThreadList`](https://replit.asimawdah.com/components/thread-list) | Conversation history for a side panel — host-labeled sections, single selection by id, unread and pinned marks |
+| [`ReplitMessage`](https://replit.asimawdah.com/components/message-thread) | One turn — ink-wash user bubble, plain assistant, error bubble, typed content parts |
+| [`ReplitStreamingText`](https://replit.asimawdah.com/components/streaming-text) | Animated text reveal while a reply arrives |
+| [`ReplitThinkingIndicator`](https://replit.asimawdah.com/components/thinking-indicator) | Animated Replit mark with a shimmering label |
+| [`ReplitShimmerText`](https://replit.asimawdah.com/components/shimmer-text) | Sweeping text highlight, static once settled |
+| [`ReplitCodeBlock`](https://replit.asimawdah.com/components/code-block) | Fenced code with built-in synchronous highlighting, a header label, and a copy affordance — languages host-extensible |
+| [`ReplitMarkdown`](https://replit.asimawdah.com/components/markdown) | Assistant prose typeset from a built-in parser — headings, emphasis, lists, quotes, tables, links, and fences composing the code block; assistant turns render it by default and it streams gracefully |
+| [`ReplitErrorState`](https://replit.asimawdah.com/components/error-state) | Failure card with a host-written message and retry pill — failed turns render it automatically |
+| [`ReplitConfirmation`](https://replit.asimawdah.com/components/confirmation) | Approval card — an asterisk-marked request with approve and reject buttons that settles into the outcome; confirmation parts render it in a thread |
+| [`ReplitToast`](https://replit.asimawdah.com/components/toast) | Floating notice: a glyph, one wrapping line and a cross on a frosted card; `showReplitToast` floats it in the nearest Overlay, stacked and auto-dismissing, with a handle to dismiss it early |
+| [`ReplitTool`](https://replit.asimawdah.com/components/tool) | Tool-call card: one status mark that settles from a turning asterisk into a check or an error glyph, the call's title and primary argument, and its input and output behind a disclosure; tool parts render it in a thread |
+| [`ReplitMessageActions`](https://replit.asimawdah.com/components/message-actions) | Copy / regenerate / edit / feedback row under a message |
+| [`ReplitComposer`](https://replit.asimawdah.com/components/composer) | Multiline input with send/stop, attachments strip, the platform's file dialog (`showReplitAttachmentPicker` from your own menu, or a built-in attach button), image paste and card-scoped drop (web), and leading/trailing action slots; a full card, or a compact single-row pill that opens into it as the draft grows |
+| [`ReplitMenu`](https://replit.asimawdah.com/components/menu) | Icon-triggered menu with groups, submenus, and toggles — anchored card on desktop, bottom sheet on phones |
+| [`ReplitModelSelector`](https://replit.asimawdah.com/components/model-selector) | Model picker with effort and overflow submenus, sheet on phones |
+| [`ReplitPill`](https://replit.asimawdah.com/components/pill) | Removable pill for an enabled tool or mode in the composer's action row — label auto-drops on phones |
+| [`ReplitAttachmentGroup`](https://replit.asimawdah.com/components/attachments) | Image and file tiles with a type pill |
+| [`ReplitAttachmentPreview`](https://replit.asimawdah.com/components/attachments) | Full-screen image viewer with zoom and paging |
+| [`ReplitDropTarget`](https://replit.asimawdah.com/components/chat-view) | File-drop detection for any subtree (web) — decoded attachments out, hover state for your own treatment |
+| [`ReplitSuggestion`](https://replit.asimawdah.com/components/suggestions) / [`ReplitSuggestionGroup`](https://replit.asimawdah.com/components/suggestions) | Prompt starters — plain or outlined; scroll, wrap, or column layouts |
+| [`ReplitGreeting`](https://replit.asimawdah.com/components/greeting) | Zero-state headline |
+| [`ReplitTheme`](https://replit.asimawdah.com/theming) | Design tokens (colors and typography) as a `ThemeExtension`, with light and dark presets |
 
 ## Getting started
 
@@ -233,7 +233,7 @@ class _ChatPageState extends State<ChatPage> {
 `ReplitChatView` is body-only — it builds no `Scaffold` and no app bar, so
 your app keeps the chrome, the background, and the keyboard inset. See
 [`example/lib/main.dart`](example/lib/main.dart) for a complete runnable
-version of this page, and the [live playground](https://replit_ui.asimawdah.com/playground)
+version of this page, and the [live playground](https://replit.asimawdah.com/playground)
 for a demo of every component with variants and code snippets.
 
 ## Composer accessories
@@ -341,9 +341,9 @@ overridable the same way.
 
 ## Docs & playground
 
-Full documentation lives at [replit_ui.asimawdah.com](https://replit_ui.asimawdah.com/), and
+Full documentation lives at [replit.asimawdah.com](https://replit.asimawdah.com/), and
 every component has a stage in the
-[live playground](https://replit_ui.asimawdah.com/playground) — variant pills and
+[live playground](https://replit.asimawdah.com/playground) — variant pills and
 code snippets included. The playground is also
 [in the repo](https://github.com/asimawdah/replit_ui/tree/main/playground) to run
 locally:
