@@ -115,7 +115,7 @@ export default defineConfig({
 				{
 					icon: 'discord',
 					label: 'Discord',
-					href: 'https://discord.gg/PDFX9Ndsx',
+					href: 'https://community-hub.replit.app/discord',
 				},
 			],
 			editLink: {
