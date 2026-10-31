@@ -38,9 +38,10 @@ docs/public/api/
 *.iws
 .idea/
 
-# Server
+# Scripts
 Dockerfile
 docker-compose.yaml
 deploy/
 reload.sh
 setup-online.sh
+

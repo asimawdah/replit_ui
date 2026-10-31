@@ -1,7 +1,6 @@
 <p align="center">
-  <img src="assets/replit_ui_logo.png" width="76" alt="Replit UI logo">
+  <img src="assets/replit_ui_logo.svg" width="76" alt="Replit UI logo">
 </p>
-
 <h1 align="center">replit_ui</h1>
 
 <p align="center">
