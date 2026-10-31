@@ -249,6 +249,19 @@ button[data-open-modal] kbd kbd {
 		padding-inline: 0.875rem 0.5rem;
 	}
 }
+@media (max-width: 49.98rem) {
+	button[data-open-modal] {
+		inline-size: 2.75rem;
+		block-size: 2.75rem;
+		padding: 0;
+		justify-content: center;
+	}
+	button[data-open-modal] svg {
+		display: block;
+		inline-size: 1rem;
+		block-size: 1rem;
+	}
+}
 
 /* Header links: quiet icon buttons (pub.dev, GitHub) clustered with the
  * theme toggle, and the Playground white pill CTA leading them. */

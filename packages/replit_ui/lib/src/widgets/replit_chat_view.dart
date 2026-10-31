@@ -115,9 +115,10 @@ class ReplitChatView extends StatefulWidget {
   final Widget? aboveComposer;
 
   /// The zero state: no messages yet. The thread gives way to [greeting]
-  /// and [suggestions] — on wide layouts the composer lifts to the vertical
-  /// centre between them, per the design; on compact ones it stays docked
-  /// with the suggestions just above it and the greeting floating centred.
+  /// and [suggestions]. The greeting floats in the available space, while
+  /// the composer stays docked at the bottom with suggestions above it.
+  /// A wide surface without a composer keeps its greeting and suggestions
+  /// centred together.
   ///
   /// The host flips this (typically `messages.isEmpty`): the view takes
   /// finished widgets and cannot see into the thread.
@@ -128,9 +129,9 @@ class ReplitChatView extends StatefulWidget {
   final Widget? greeting;
 
   /// The zero state's starters, usually a column `ReplitSuggestionGroup`.
-  /// Shown only while [empty]; the view places them — 48 below the
-  /// composer on wide layouts, capped at [emptySuggestionsWidth], and 16
-  /// above it on compact ones, stepped in a further 8.
+  /// Shown only while [empty], above the docked composer. On wide layouts
+  /// they are capped at [emptySuggestionsWidth]; on compact ones they sit
+  /// 16 above the composer, stepped in a further 8.
   final Widget? suggestions;
 
   /// Enables the jump-to-latest button. Pass the **same** controller to the
@@ -148,11 +149,10 @@ class ReplitChatView extends StatefulWidget {
   final double maxContentWidth;
 
   /// The composer's rail in the wide zero state, where it sits narrower
-  /// than in a running chat. Defaults to the design's 640.
+  /// than in a running chat. Defaults to 640.
   final double emptyComposerWidth;
 
-  /// The [suggestions] rail in the wide zero state. Defaults to the
-  /// design's 480.
+  /// The [suggestions] rail in the wide zero state. Defaults to 480.
   final double emptySuggestionsWidth;
 
   /// Around the composer block. Defaults to the design's 16 at the sides —
@@ -277,10 +277,8 @@ class _ReplitChatViewState extends State<ReplitChatView> {
   /// card it floats above share one.
   static const double _jumpShadowBlur = 12;
 
-  /// The zero state's rhythm: greeting 32 above the composer; suggestions
-  /// 48 below it on wide layouts, and on compact ones 16 above the docked
-  /// composer, stepped in a further 8 — the design's 24 with the default
-  /// padding.
+  /// The read-only wide zero state's rhythm: greeting 32 above the
+  /// suggestions, which are 48 below the composer position.
   static const double _greetingGap = 32;
   static const double _suggestionsGapWide = 48;
   static const double _suggestionsGapCompact = 16;
@@ -422,9 +420,9 @@ class _ReplitChatViewState extends State<ReplitChatView> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     if (widget.header != null) widget.header!,
-                    if (widget.empty && !compact)
-                      // The wide zero state: the composer leaves the bottom edge
-                      // and the whole cluster centres itself instead.
+                    if (widget.empty && !compact && widget.composer == null)
+                      // A wide read-only zero state keeps its greeting and
+                      // suggestions centred.
                       Expanded(child: _emptyCentre(constraints.maxWidth))
                     else ...[
                       Expanded(
@@ -623,9 +621,8 @@ class _ReplitChatViewState extends State<ReplitChatView> {
     );
   }
 
-  /// The wide zero state's centred cluster: greeting, composer, starters,
-  /// each on its own rail. Scrollable so a short window degrades gracefully
-  /// instead of overflowing.
+  /// The wide read-only zero state's centred cluster. Scrollable so a short
+  /// window degrades gracefully instead of overflowing.
   Widget _emptyCentre(double viewportWidth) {
     final available = viewportWidth - _sideInset * 2;
     final composerWidth = math.min(widget.emptyComposerWidth, available);
@@ -707,7 +704,17 @@ class _ReplitChatViewState extends State<ReplitChatView> {
           padding: const EdgeInsets.symmetric(
             horizontal: _suggestionsExtraInset,
           ),
-          child: suggestions,
+          child: widget.empty && !compact
+              ? Center(
+                  child: SizedBox(
+                    width: math.min(
+                      widget.emptySuggestionsWidth,
+                      widget.emptyComposerWidth,
+                    ),
+                    child: suggestions,
+                  ),
+                )
+              : suggestions,
         ),
       );
     }
@@ -731,7 +738,11 @@ class _ReplitChatViewState extends State<ReplitChatView> {
         padding: padding,
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: widget.maxContentWidth),
+            constraints: BoxConstraints(
+              maxWidth: widget.empty && !compact
+                  ? widget.emptyComposerWidth
+                  : widget.maxContentWidth,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,

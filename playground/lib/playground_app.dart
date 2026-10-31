@@ -30,8 +30,8 @@ class _PlaygroundAppState extends State<PlaygroundApp> {
       title: 'Replit UI Playground · Flutter UI library for AI Chat Interfaces',
       debugShowCheckedModeBanner: false,
       themeMode: _mode,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
+      theme: AppTheme.playgroundLight,
+      darkTheme: AppTheme.playgroundDark,
       routerConfig: _router,
       builder: (context, child) => METheme(
         data: METhemeData.expressive,

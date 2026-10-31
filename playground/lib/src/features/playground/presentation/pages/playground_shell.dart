@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:replit_ui/replit_ui.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../../core/layout/breakpoints.dart';
@@ -79,12 +78,6 @@ class _PlaygroundShellState extends State<PlaygroundShell> {
                   ),
                 )
               : null,
-          bottomNavigationBar: mobile
-              ? _MobileActions(
-                  onBrowse: () => _scaffoldKey.currentState?.openDrawer(),
-                  onShowCode: _showCodeSheet,
-                )
-              : null,
           body: SafeArea(
             top: true,
             bottom: false,
@@ -93,6 +86,8 @@ class _PlaygroundShellState extends State<PlaygroundShell> {
               children: [
                 TopBar(
                   mobile: mobile,
+                  onBrowse: () => _scaffoldKey.currentState?.openDrawer(),
+                  onShowCode: _showCodeSheet,
                   onThemeModeChanged: widget.onThemeModeChanged,
                   codeOpen: showInlineCode && _codeOpen,
                   onToggleCode: showInlineCode
@@ -180,81 +175,6 @@ class _PlaygroundShellState extends State<PlaygroundShell> {
             variant: _variant,
             onClose: () => Navigator.of(context).pop(),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MobileActions extends StatelessWidget {
-  const _MobileActions({required this.onBrowse, required this.onShowCode});
-
-  final VoidCallback onBrowse;
-  final VoidCallback onShowCode;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.replitColors;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: colors.surfaceBright,
-        border: Border(top: BorderSide(color: colors.outline)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SizedBox(
-          height: 62,
-          child: Row(
-            children: [
-              _MobileAction(
-                icon: Icons.grid_view_rounded,
-                label: 'Browse',
-                onTap: onBrowse,
-              ),
-              _MobileAction(
-                icon: Icons.code_rounded,
-                label: 'Code',
-                onTap: onShowCode,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _MobileAction extends StatelessWidget {
-  const _MobileAction({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colors = context.replitColors;
-
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 20, color: colors.onSurfaceVariant),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: colors.onSurfaceVariant),
-            ),
-          ],
         ),
       ),
     );

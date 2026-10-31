@@ -177,10 +177,7 @@ class _FullChatDemoState extends State<FullChatDemo> {
       attachmentOptions: _attachmentOptions,
       dropLabel: 'Drop files to add to chat',
       empty: _messages.isEmpty,
-      greeting: const ReplitGreeting(
-        icon: PhosphorIconsRegular.sunHorizon,
-        text: 'Good Afternoon',
-      ),
+      
       suggestions: ReplitSuggestionGroup(
         layout: ReplitSuggestionLayout.column,
         suggestions: [
