@@ -40,6 +40,6 @@ docs/public/api/
 .idea/
 
 # Server
-Docker
+Dockerfile
 docker-compose.yaml
 deploy/
