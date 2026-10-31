@@ -43,3 +43,5 @@ docs/public/api/
 Dockerfile
 docker-compose.yaml
 deploy/
+reload.sh
+setup-online.sh
