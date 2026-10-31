@@ -1,0 +1,34 @@
+name: replit_ui_workspace
+description: Pub workspace for replit_ui packages. Not published.
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.44.0"
+
+workspace:
+  - packages/replit_ui
+  - packages/replit_ui/example
+  - playground
+
+dev_dependencies:
+  melos: ^7.7.0
+  very_good_analysis: ^11.0.0
+
+melos:
+  scripts:
+    analyze:
+      description: dart analyze --fatal-infos in every member, with the nearest analysis_options.yaml
+      run: dart run melos exec -- dart analyze --fatal-infos .
+    format:
+      description: Format every member in place
+      run: dart run melos exec -- dart format .
+    format:check:
+      description: Fails on unformatted files
+      run: dart format --output=none --set-exit-if-changed .
+    test:
+      description: Tests in every member that has a test/ directory
+      run: dart run melos exec --dir-exists=test -- flutter test
+    publish:dry-run:
+      description: Packaging smoke for every publishable member
+      run: dart run melos exec --no-private -- flutter pub publish --dry-run

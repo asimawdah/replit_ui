@@ -1,0 +1,178 @@
+---
+title: Theming
+description: "The replit_ui token system: three levels of ink, translucent washes on opaque grounds, and a color scheme shaped like Material 3."
+sidebar:
+  order: 2
+---
+
+Every replit_ui component draws from two token sets — **colors** and
+**typography** — installed as a `ThemeExtension`:
+
+```dart title="main.dart"
+MaterialApp(
+  theme: ThemeData(extensions: [ReplitTheme.light()]),
+  darkTheme: ThemeData(
+    brightness: Brightness.dark,
+    extensions: [ReplitTheme.dark()],
+  ),
+)
+```
+
+No component hardcodes a color or a text style, so restyling the whole
+library is a matter of overriding tokens.
+
+## Three levels of ink
+
+Color role names follow Material 3's `ColorScheme`, so an existing M3 scheme
+maps straight across — with three additions. The Replit design draws content at
+three strengths, and M3 only names two:
+
+| Token | Strength | Used for |
+| --- | --- | --- |
+| `onSurface` | 100% | Prose, the model name, an active label |
+| `onSurfaceVariant` | 75% | Secondary content: row labels, icons at rest |
+| `onSurfaceMuted` | 50% | Muted chrome: placeholders, carets, action icons |
+
+Below the ramp sits `onSurfaceDisabled` (30%) — not a fourth content level
+but the drained state: the send disc with nothing to send.
+
+The other addition is a pair of status groups beside `error`: `success` and
+`warning`, each with its `on`, `Container` and `onContainer` roles.
+
+The third is `shadow` — the ink at 2% with the alpha baked in. Every raised
+element — the composer, the menu card, attachment tiles, the jump-to-latest
+disc — draws its shadow in this one color with its own blur and no offset,
+so retheming it lifts or kills the library's shadows at once.
+
+## Three rules hold the palette together
+
+The light and dark presets follow the
+[Replit brand palette](https://replit.com/brand): Replit Orange anchors
+interactive states, while Off White, Off Black, Dark Gray and the warm gray
+scale set the surfaces and ink. Status colors remain distinct so success,
+warning and failure keep their meaning.
+
+**The ink, the outlines, and the container ladder are translucent.**
+`onSurfaceVariant`, `onSurfaceMuted`, `outline` (the faint hairline — 7%
+ink in light, 8% in dark), `outlineVariant` (the firm one — 12% in both)
+and `shadow` (2%) are the foreground ink at an alpha, not resolved colors —
+the same label and the same hairline read correctly on the page *and* on a
+raised card, because they composite. The `surfaceContainerLowest → Highest`
+ladder is cut from the same ink in even steps — 2, 4, 6, 8, 10% — so a
+fill picked for the page holds up anywhere.
+
+**Accent containers are washes of their accent.** Primary, secondary and
+tertiary containers use 8% washes; status containers use 6%. Each
+`onContainer` token is chosen for readable contrast against its container.
+
+**The grounds are opaque.** `surface` is Replit Off White (`#FAF6F1`) in
+light and Off Black (`#181818`) in dark. `surfaceBright` is white in light
+and Replit Dark Gray (`#312E2E`) in dark.
+
+## The raised card
+
+`surfaceBright` is the composer, the menus, the sheets — the one surface
+that lifts off the page in *both* themes. That's why it sits outside the
+`surfaceContainerLowest → Highest` tint ladder rather than at the bottom of
+it: in light it's pure white above Off White, in dark it's Dark Gray above
+Off Black. (`surfaceContainerLowest` is the ladder's
+faintest rung — a 2% wash — not the card; retheme the card through
+`surfaceBright`.)
+
+## Overriding tokens
+
+Start from a preset and replace what your brand needs:
+
+```dart title="Override the accent"
+MaterialApp(
+  theme: ThemeData(
+    extensions: [
+      ReplitTheme(
+        colors: ReplitColors.light.copyWith(
+          primary: const Color(0xFFC63200),
+        ),
+      ),
+    ],
+  ),
+)
+```
+
+Your own widgets can read the same tokens the components use:
+
+```dart title="Read tokens in your own widgets"
+final colors = context.replitColors;
+final typography = context.replitTypography;
+
+Text(
+  'Caption',
+  style: typography.bodySmall.copyWith(color: colors.onSurfaceVariant),
+)
+```
+
+## The type scale
+
+`ReplitTypography.standard` follows the Material 3 scale — display, headline,
+title, body and label, each in large / medium / small — inheriting the host's
+text face. Its metrics follow the Replit brand type scale: headlines use 95% line
+height and -3% tracking, subheads use 100% and -2%, body uses 130% with no
+tracking, and labels use 130% with 5% tracking.
+
+Each body size carries three weights of ink — `bodyLarge`,
+`bodyLargeEmphasised` (w500), `bodyLargeDark` (w700), and likewise for
+Medium and Small. Title and label pair the regular cut with an emphasised
+one (`titleLargeEmphasised` at w700, `labelLargeEmphasised` at w500), so
+emphasis in a heading or a control never needs an ad-hoc `copyWith`.
+Styles are colorless; components pair them with color tokens at draw time.
+
+The code roles inherit the platform monospace face. The package bundles no
+fonts; hosts can choose a code face with `withCodeFontFamily`. Replit-branded
+apps can bundle their licensed Diatype files and set both faces explicitly:
+`ThemeData(fontFamily: 'Diatype')` and
+`ReplitTypography.standard.withFontFamily('Diatype').withCodeFontFamily('Diatype Semi-Mono')`.
+
+To keep the scale and swap the face:
+
+```dart title="Your brand's typeface"
+ReplitTheme(
+  colors: ReplitColors.light,
+  typography: ReplitTypography.standard.withFontFamily('Inter'),
+)
+```
+
+`withFontFamily` rebuilds every style from the four things the scale
+carries — size, weight, line height, tracking — and takes a `package:` for
+a font that ships inside one.
+
+## Component styles
+
+Between the tokens and a single widget sit the component styles —
+Material's component-theme tier. Each major widget has a `ReplitXStyle`
+data bag of optional overrides (`ReplitMenuStyle`, `ReplitMarkdownStyle`,
+`ReplitComposerStyle`, `ReplitMessageStyle`, `ReplitCodeBlockStyle`,
+`ReplitConfirmationStyle`, `ReplitErrorStateStyle`,
+`ReplitMessageActionsStyle`, `ReplitPillStyle`,
+`ReplitSuggestionStyle`, `ReplitToastStyle`, `ReplitToolStyle`), and the theme can
+carry an app-wide default for
+each:
+
+```dart title="Restyle every instance once"
+ReplitTheme(
+  colors: ReplitColors.light,
+  markdownStyle: const ReplitMarkdownStyle(linkColor: brandBlue),
+  codeBlockStyle: const ReplitCodeBlockStyle(borderColor: Colors.transparent),
+)
+```
+
+Resolution is field by field: a widget's own style object wins over the
+theme's, and any field neither sets falls through to the tokens. Text
+style fields merge over their role's base, so setting one property never
+restates the rest. Every field is documented on its style class, with
+the token it defaults to. The `Restyling` section on each component's
+page lists its fields.
+
+## Spacing and radii are not tokens
+
+Following Material's structure, each component bakes its own metrics from
+the design file and exposes per-widget overrides (`padding:`,
+`borderRadius:`) where hosts retheme. There is deliberately no global
+spacing scale to fight with.

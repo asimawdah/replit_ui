@@ -1,0 +1,183 @@
+---
+title: Code block
+description: Fenced code on its own ground — built-in synchronous highlighting, a header label, and a copy affordance that reports intent.
+sidebar:
+  order: 13
+---
+
+import ReplitDemo from '../../../components/ReplitDemo.astro';
+
+`ReplitCodeBlock` renders a fenced snippet on its own washed ground, under a
+header that names the content and offers copy. Highlighting is built in
+and synchronous — no setup call, no assets, nothing async. `language`
+picks a rule table (Dart, JSON, JavaScript/TypeScript, Python, shell,
+YAML, HTML, CSS and SQL ship in the box); unknown ids render plain,
+never an error. Token inks come from the theme's `ReplitSyntaxColors`, so
+code recolors with the rest of the palette in both themes.
+
+In a message, code arrives as a `ReplitCodePart` and `ReplitMessage` renders
+the block for you — copy intent surfaces on `ReplitThread.onCodeCopy` with
+the part in hand.
+
+## Dart
+
+<ReplitDemo demo="codeBlock" variant="dart" height={620} title="Dart" />
+
+```dart title="The block reports intent; the host owns the clipboard"
+ReplitCodeBlock(
+  code: source,
+  language: 'dart',
+  filename: 'point.dart',
+  copyTooltip: 'Copy code',
+  copied: copied,
+  onCopy: () async {
+    await Clipboard.setData(ClipboardData(text: source));
+    setState(() => copied = true);
+    // Hold `copied` for a beat, then clear it — the affordance shows a
+    // primary-tinted check for as long as the host says so.
+  },
+)
+```
+
+## JSON
+
+Keys read apart from string values, and long lines scroll horizontally
+inside the block (`wrap: true` wraps them instead):
+
+<ReplitDemo demo="codeBlock" variant="json" height={420} title="JSON" />
+
+```dart title="A payload with a long line"
+ReplitCodeBlock(
+  code: payload,
+  language: 'json',
+  filename: 'screen.json',
+  copyTooltip: 'Copy code',
+  onCopy: () => copy(payload),
+)
+```
+
+## Plain
+
+No `language` — or one the registry doesn't know — renders plain ink;
+the header can still carry a filename:
+
+<ReplitDemo demo="codeBlock" variant="plain" height={300} title="Plain" />
+
+```dart title="Logs, output, anything unhighlightable"
+ReplitCodeBlock(
+  code: log,
+  filename: 'build.log',
+  copyTooltip: 'Copy',
+  onCopy: () => copy(log),
+)
+```
+
+## Streaming
+
+While `isStreaming` is true the copy affordance hides — there is nothing
+complete to copy — and each delivery renders whole, with no per-character
+reveal (streamed code arrives re-highlighted as often as appended, which
+a reveal would restart on). In a thread this is automatic while the
+message streams:
+
+<ReplitDemo demo="codeBlock" variant="streaming" height={620} title="Streaming" />
+
+```dart title="Code parts in a streaming thread"
+ReplitThread(
+  messages: messages,
+  codeCopyTooltip: 'Copy code',
+  copiedCodePart: copiedPart,
+  onCodeCopy: (part) async {
+    await Clipboard.setData(ClipboardData(text: part.code));
+    setState(() => copiedPart = part);
+  },
+)
+```
+
+## Languages
+
+Resolution is by id or alias, case-insensitive, and anything unknown
+renders plain — a `rust` fence degrades gracefully rather than erroring:
+
+| Language | id | Aliases |
+|---|---|---|
+| Dart | `dart` | — |
+| JSON | `json` | `jsonc` |
+| JavaScript / TypeScript | `javascript` | `js`, `jsx`, `typescript`, `ts`, `tsx` |
+| Python | `python` | `py` |
+| Shell | `bash` | `sh`, `shell`, `zsh` |
+| YAML | `yaml` | `yml` |
+| HTML | `html` | `xml` |
+| CSS | `css` | `scss`, `less` |
+| SQL | `sql` | `mysql`, `postgres`, `postgresql`, `sqlite` |
+| Plain | `plain` | `text`, `txt` |
+
+YAML, for one, knows that `on:` is a key before it is a boolean:
+
+<ReplitDemo demo="codeBlock" variant="yaml" height={520} title="YAML" />
+
+The registry is host-extensible. `ReplitCodeLanguage` is an ordered rule
+table — earlier rules win, so comments and strings come first — and
+`register` makes it resolvable from every block. A table like SQL's,
+whose keywords come in either case, sets `caseSensitive: false`:
+
+```dart title="Registering a language"
+ReplitCodeLanguage.register(
+  const ReplitCodeLanguage(
+    id: 'lisp',
+    rules: [
+      ReplitSyntaxRule(ReplitSyntaxToken.comment, r';[^\n]*'),
+      ReplitSyntaxRule(ReplitSyntaxToken.string, r'"(?:\\.|[^"\\])*"'),
+      ReplitSyntaxRule(ReplitSyntaxToken.punctuation, r'[()]+'),
+    ],
+  ),
+);
+```
+
+## Theming
+
+Token inks are theme tokens. Install a `ReplitSyntaxColors` on the theme to
+recolor them; the code face inherits the platform monospace face by default
+and can be set independently through the typography:
+
+```dart title="Custom syntax palette and mono face"
+ReplitTheme(
+  colors: ReplitColors.light,
+  syntax: ReplitSyntaxColors.light.copyWith(keyword: myBrandAccent),
+  typography: ReplitTypography.standard.withCodeFontFamily('JetBrainsMono'),
+)
+```
+
+## Restyling
+
+`ReplitCodeBlockStyle` overrides the block's chrome without touching the
+global tokens: `backgroundColor` (transparent lets the code sit on the
+host's own surface), `borderColor` (transparent renders it borderless),
+`hoverBorderColor`, `headerStyle`, and `codeStyle` (both merged over
+their defaults). Token inks inside the code stay with the theme's
+`ReplitSyntaxColors`. Install one on `ReplitTheme.codeBlockStyle` for every
+block — markdown fences included; the widget's `style` wins field by
+field.
+
+## Key API
+
+- `ReplitCodeBlock` — `code`, `language` (id or alias, case-insensitive),
+  `filename` (header label; falls back to `language`), `onCopy` /
+  `copied` / `copyTooltip` (intent out, host-owned confirmation),
+  `isStreaming`, `wrap`, plus `padding` and `borderRadius` over the
+  design's 16/12 inset and 12px corner. The code is selectable: on its
+  own the block hosts its own selection; in a thread it joins the
+  thread's, so a drag from the prose above runs straight through it, or
+  stays unselectable when the thread opted out; the header label never
+  selects.
+- `ReplitCodePart` — `code`, `language`, `filename`; rendered by
+  `ReplitMessage`, skipped in system messages.
+- `ReplitThread` / `ReplitMessage` — `onCodeCopy` (handed the tapped part),
+  `copiedCodePart` (pass the instance back while the confirmation lasts),
+  `codeCopyTooltip`.
+- `ReplitCodeLanguage` — `find`, `register`, `caseSensitive`, and the
+  built-ins (`dart`, `json`, `javascript`, `python`, `bash`, `yaml`,
+  `html`, `css`, `sql`, `plain`); `ReplitSyntaxRule` pairs a regex with a
+  `ReplitSyntaxToken`.
+- `ReplitSyntaxColors` — eight token roles with light and dark presets, on
+  `ReplitTheme.syntax`.

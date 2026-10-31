@@ -1,0 +1,33 @@
+# one-off local tooling (og-card generation, screenshot capture) — kept out
+# of the public repo
+scripts/gen-og.mjs
+*.tmp.mjs
+
+# build output
+dist/
+# generated types
+.astro/
+
+# built at build time from the repo (see scripts/)
+public/playground/
+public/api/
+
+# dependencies
+node_modules/
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+
+# environment variables
+.env
+.env.production
+
+# macOS-specific files
+.DS_Store
+
+# wrangler pages dev, used to verify the playground redirects locally
+.wrangler/

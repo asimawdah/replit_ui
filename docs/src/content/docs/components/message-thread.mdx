@@ -1,0 +1,167 @@
+---
+title: Message & Thread
+description: Conversation rendering from plain message data — roles, streaming, and the pending and error states.
+sidebar:
+  order: 1
+---
+
+import ReplitDemo from '../../../components/ReplitDemo.astro';
+
+`ReplitThread` renders a conversation from plain message data — user,
+assistant, and system roles — and `ReplitMessage` renders a single turn: an
+ink-wash bubble for the user, typeset prose on the page for the assistant
+(assistant text renders as [markdown](/components/markdown/) by default;
+`markdown: false` opts a literal-text host out). Neither knows where the
+messages came from.
+
+A conversation that still fits its viewport reads from the top, the
+AI-app convention; once it outgrows the viewport the thread anchors to
+the newest message.
+
+## A conversation
+
+<ReplitDemo demo="thread" height={380} title="A ReplitThread conversation" />
+
+```dart title="A three-role conversation"
+ReplitThread(
+  messages: [
+    ReplitMessageData.text(
+      id: '1',
+      role: ReplitMessageRole.user,
+      text: 'What is replit_ui?',
+    ),
+    ReplitMessageData.text(
+      id: '2',
+      role: ReplitMessageRole.assistant,
+      text: 'An open-source Flutter UI library to build production-grade Chat & AI assistant interfaces...',
+    ),
+    ReplitMessageData.text(
+      id: '3',
+      role: ReplitMessageRole.system,
+      text: 'Model changed to Sonnet',
+    ),
+  ],
+)
+```
+
+## Streaming
+
+Streaming is data, not streams: as chunks arrive, rebuild with the updated
+message list and the thread animates the reveal. Status walks
+`pending → streaming → complete`.
+
+<ReplitDemo demo="thread" variant="streaming" height={380} title="Streaming in a thread" />
+
+```dart title="Stream by rebuilding"
+ReplitThread(
+  messages: [
+    ...history,
+    ReplitMessageData(
+      id: 'reply',
+      role: ReplitMessageRole.assistant,
+      parts: [ReplitTextPart(streamedSoFar)],
+      status: ReplitMessageStatus.streaming,
+    ),
+  ],
+)
+```
+
+## Pending and error states
+
+A `pending` assistant message shows the thinking indicator until the first
+token arrives; an `error` status wraps the content in an error bubble.
+
+```dart title="Pending and error states"
+// Pending: the thinking indicator until the first token arrives.
+ReplitMessage(
+  ReplitMessageData(
+    id: 'p',
+    role: ReplitMessageRole.assistant,
+    status: ReplitMessageStatus.pending,
+  ),
+  thinkingLabel: 'Thinking…',
+)
+
+// Error: content in an error bubble.
+ReplitMessage(
+  ReplitMessageData.text(
+    id: 'e',
+    role: ReplitMessageRole.assistant,
+    text: 'Something went wrong while generating a response.',
+    status: ReplitMessageStatus.error,
+  ),
+)
+```
+
+## Message parts
+
+Message content is typed parts, not strings: a sealed `ReplitMessagePart`
+with `ReplitTextPart`, `ReplitAttachmentPart`, `ReplitImagePart`, and
+`ReplitCustomPart` subtypes (plus `ReplitCodePart`, `ReplitErrorPart`,
+`ReplitConfirmationPart` and `ReplitToolPart`).
+`ReplitAttachmentPart` renders sent files — lifted above a user bubble as
+image cards, tiles elsewhere —
+while `ReplitImagePart` is the large-format picture, an AI-generated image
+presented as content: a null `image` renders the generating state, a
+shimmering block at the part's aspect ratio, and the host re-renders
+with the `ImageProvider` set when the picture lands. Tapping a landed
+image opens the full-screen preview.
+`ReplitCustomPart` plus a `ReplitCustomPartBuilder` on the message is the
+extension seam — it carries a `type` your builder switches on and an
+arbitrary `data` payload, so the host injects its own content (a tool
+card, a chart) without the library knowing what it is.
+
+## Selecting text
+
+Text in a thread is selectable, the way a chat in a browser is: drag
+across turns with a mouse, long-press a word on touch, then copy with the
+platform's shortcut or menu. The highlight, the handles and the toolbar
+take the theme's `primary`; an explicit `ThemeData.textSelectionTheme`
+wins field by field.
+
+A copy reads the way the thread does: paragraphs on their own lines, a
+blank line between turns, code and table cells included. Chrome stays out
+of it (button labels, the code block's header, the type pill on an
+attachment, the thinking line), and so do list markers, as in a browser.
+Content a host renders (a custom part, a footer, a `leading` slot) is
+selectable by default; wrap a widget in `SelectionContainer.disabled` to
+keep it out.
+
+`selectable: false` leaves selection to the host: inside a host
+`SelectionArea` the content joins it, code blocks included; with no area
+above, nothing in the thread selects, so a long-press is the host's. A `ReplitMessage`, `ReplitMarkdown` or `ReplitStreamingText` on its own
+selects inside a host `SelectionArea`, like a plain `Text`; `ReplitCodeBlock`
+on its own keeps its own selection. Select-all covers the turns the lazy
+list has built.
+
+## Restyling
+
+`ReplitMessageStyle` overrides the user bubble without touching the global
+tokens: `bubbleColor` and `bubbleTextColor` (a failed turn keeps the
+error treatment regardless). Install one on `ReplitTheme.messageStyle` for
+every message; a `ReplitMessage`'s own `style` wins field by field.
+Assistant prose is restyled through `ReplitMarkdownStyle`, code through
+`ReplitCodeBlockStyle` — see those components' pages.
+
+## Key classes
+
+- `ReplitThread` — the scrolling conversation; give it a `ScrollController`
+  to pair with `ReplitChatView`'s jump-to-latest. `padding` (the design's
+  16 at the sides, 40 vertically) and `itemSpacing` (32) override the
+  metrics; `messageBuilder`
+  swaps the default `ReplitMessage` per turn; `thinkingLabel`,
+  `charactersPerSecond`, and `previewCloseTooltip` forward to every
+  message; `markdown` (default true) and `onLinkTap: (message, href)`
+  gate and wire the assistant markdown; `keyboardDismissBehavior`
+  (default on-drag) dismisses the keyboard as the thread scrolls;
+  `messageFooter` builds each message's footer slot (an actions row, a
+  timestamp) without replacing the default message the way
+  `messageBuilder` does; `selectable` (default true) hosts the thread's
+  selection area.
+- `ReplitMessage` — one turn; accepts a `ReplitCustomPartBuilder`, an
+  `onAttachmentTap` override, `leading` and `footer` slots (an avatar,
+  the action row), a `textStyle`, the same `markdown` gate and a
+  single-arity `onLinkTap`, and the user bubble's overrides —
+  `maxBubbleWidthFraction` (0.75), `bubbleRadius`, `bubblePadding`.
+- `ReplitMessageData` — `id`, `role`, `parts`, `status`, and an optional
+  `timestamp`; the `.text` constructor covers the plain case.

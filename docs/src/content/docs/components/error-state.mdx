@@ -1,0 +1,128 @@
+---
+title: Error state
+description: The failure card — an error glyph, a host-written message, and a retry pill that reports intent.
+sidebar:
+  order: 14
+---
+
+import ReplitDemo from '../../../components/ReplitDemo.astro';
+
+`ReplitErrorState` is the failure surface: an error glyph and a host-written
+explanation on a hairline card, with an optional retry pill. It renders
+state and reports one intent — what retry *means* (re-run the turn,
+refetch, reconnect, resend) is the host's business. The package ships no
+strings, so `title`, `message` and `retryLabel` are all host-localized;
+the message announces to assistive tech as a live region, and the pill is
+a visible control rather than a hover-revealed action, because hover does
+not exist on touch.
+
+## Card
+
+<ReplitDemo demo="errorState" variant="card" height={220} title="The full card" />
+
+```dart title="The full anatomy"
+ReplitErrorState(
+  title: 'Connection error',
+  message: 'The API is overloaded right now. Retry in a moment.',
+  retryLabel: 'Retry',
+  onRetry: resend,
+)
+```
+
+## Minimal
+
+Every part is optional: without a `title` the message takes the glyph
+row, and a null `onRetry` hides the pill:
+
+<ReplitDemo demo="errorState" variant="minimal" height={160} title="Message only" />
+
+```dart title="Just the failure"
+ReplitErrorState(
+  message: 'The API is overloaded right now. Retry in a moment.',
+)
+```
+
+## A failed turn
+
+In a thread the card renders on its own. A `ReplitErrorPart` in any turn
+becomes this card — and because parts render in order, everything the
+turn already delivered keeps its normal ink, with the failure closing the
+turn below it. Retry hands the failed message back through
+`ReplitThread.onRetry`:
+
+<ReplitDemo demo="errorState" variant="thread" height={480} title="Partial reply, then the card" />
+
+```dart title="The host contract"
+ReplitThread(
+  messages: messages,
+  errorTitle: 'Connection error',
+  retryLabel: 'Retry',
+  // Typically: drop or reset the failed message, re-run the turn.
+  onRetry: (message) => rerun(message),
+)
+```
+
+A turn whose status is `ReplitMessageStatus.error` but carries no
+`ReplitErrorPart` still closes with a default card — zero-wiring hosts keep
+a visible failure state.
+
+## Not retryable
+
+`retryable: false` on the part suppresses the pill even when the thread
+wires `onRetry` — for failures retrying can't fix:
+
+```dart title="A terminal failure"
+ReplitMessageData(
+  id: 'a2',
+  role: ReplitMessageRole.assistant,
+  status: ReplitMessageStatus.error,
+  parts: [
+    ReplitErrorPart(
+      message: 'This conversation exceeds the context window.',
+      retryable: false,
+    ),
+  ],
+)
+```
+
+## Elsewhere
+
+Standalone, the same card serves the other failure surfaces — a thread
+that failed to load, a failed send below the composer, or a connection
+notice pinned above the input via `ReplitChatView.aboveComposer`, the
+slot that already exists for exactly this:
+
+```dart title="A connection notice above the composer"
+ReplitChatView(
+  thread: ReplitThread(messages: messages),
+  aboveComposer: offline
+      ? ReplitErrorState(
+          message: 'Connection lost.',
+          retryLabel: 'Reconnect',
+          onRetry: reconnect,
+        )
+      : null,
+  composer: ReplitComposer(onSend: send),
+)
+```
+
+## Restyling
+
+`ReplitErrorStateStyle` overrides the card's look without touching the
+global tokens: `backgroundColor`, `borderColor`, `glyphColor`,
+`titleStyle`, and `messageStyle` (both merged over their defaults).
+Install one on `ReplitTheme.errorStateStyle` for every error card — failed
+turns in a thread included; the widget's `style` wins field by field.
+
+## Key API
+
+- `ReplitErrorState` — `title`, `message`, `onRetry` (null hides the
+  pill), `retryLabel` (doubles as the pill's accessible name; null
+  renders the glyph alone), plus `padding` and `borderRadius` over the
+  design's 16/14 inset and 12px corner.
+- `ReplitErrorPart` — `message`, `retryable` (default true); rendered by
+  `ReplitMessage` in part order, skipped in system messages.
+- `ReplitThread` / `ReplitMessage` — `onRetry` (thread-level is handed the
+  failed `ReplitMessageData`), `errorTitle`, `retryLabel`.
+- A failed assistant turn keeps its parts in normal ink; the
+  `errorContainer` recolor now applies only to the user bubble.

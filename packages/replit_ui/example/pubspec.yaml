@@ -1,0 +1,32 @@
+name: replit_ui_example
+description: A Gemini chat example using replit_ui and its streaming SDK.
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=3.44.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  replit_ui: ^0.4.0
+  material_ui: ^1.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Diatype
+      fonts:
+        - asset: fonts/diatype-variable.ttf
+    - family: Diatype Semi-Mono
+      fonts:
+        - asset: fonts/diatype-semi-mono.ttf

@@ -1,0 +1,104 @@
+import 'package:replit_ui/replit_ui.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:phosphoricons_flutter/phosphoricons_flutter.dart';
+
+String suggestionsSnippet([String? variant]) {
+  final layout = switch (variant) {
+    'scroll' => 'scroll',
+    'wrap' => 'wrap',
+    _ => 'column',
+  };
+  return _suggestionsSnip.replaceFirst('LAYOUT', layout);
+}
+
+const String _suggestionsSnip = '''
+ReplitSuggestionGroup(
+  // column: full-width rows, the zero state's form.
+  // scroll: one strip, no scrollbar — above a composer.
+  // wrap: as many lines as needed.
+  layout: ReplitSuggestionLayout.LAYOUT,
+  suggestions: [
+    for (final starter in starters)
+      ReplitSuggestion(
+        label: starter.prompt,
+        icon: starter.icon,
+        // outlined: true draws the faint fill and hairline.
+        onTap: () => send(starter.prompt),
+      ),
+  ],
+)''';
+
+const List<(IconData, String)> _starters = [
+  (
+    PhosphorIconsRegular.articleNyTimes,
+    'Write an essay about life and enjoyment',
+  ),
+  (
+    PhosphorIconsRegular.calendarCheck,
+    'Create a Monday briefing about my tasks and meetings',
+  ),
+  (PhosphorIconsRegular.magnifyingGlass, 'Suggest a new venture for me'),
+];
+
+const List<String> _prompts = [
+  'Write an essay about life',
+  'Create a Monday briefing',
+  'Suggest a new venture for me',
+  'Translate to Japanese',
+  'Find the bug in this stack trace',
+];
+
+/// Prompt starters in the group's three layouts: the zero state's column,
+/// the outlined scrolling strip, and the wrap.
+class SuggestionsDemo extends StatelessWidget {
+  const SuggestionsDemo({super.key, this.variant});
+
+  final String? variant;
+
+  @override
+  Widget build(BuildContext context) {
+    final Widget group;
+    switch (variant) {
+      case 'scroll':
+        group = ReplitSuggestionGroup(
+          suggestions: [
+            for (final prompt in _prompts)
+              ReplitSuggestion(label: prompt, outlined: true, onTap: () {}),
+          ],
+        );
+      case 'wrap':
+        group = ReplitSuggestionGroup(
+          layout: ReplitSuggestionLayout.wrap,
+          suggestions: [
+            for (final (icon, prompt) in _starters)
+              ReplitSuggestion(
+                label: prompt,
+                icon: icon,
+                outlined: true,
+                onTap: () {},
+              ),
+            const ReplitSuggestion(
+              label: 'Run a deep research pass',
+              outlined: true,
+              tooltip: 'Not available on this plan',
+            ),
+          ],
+        );
+      default:
+        group = ReplitSuggestionGroup(
+          layout: ReplitSuggestionLayout.column,
+          suggestions: [
+            for (final (icon, prompt) in _starters)
+              ReplitSuggestion(label: prompt, icon: icon, onTap: () {}),
+          ],
+        );
+    }
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 480),
+        child: group,
+      ),
+    );
+  }
+}

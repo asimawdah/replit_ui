@@ -1,0 +1,115 @@
+---
+title: Getting started
+description: Install replit_ui, wire the theme, and render your first conversation.
+sidebar:
+  order: 1
+---
+
+import { Aside, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+Replit UI is an open-source Flutter UI library to build production-grade
+Chat & AI assistant interfaces — a plain Flutter package, no codegen, and
+nothing in its dependency tree that Flutter's own team doesn't publish.
+Its components draw the conversation state you hand them and report what
+the user did through callbacks; everything model-shaped stays in your
+app.
+
+## Install
+
+One line in your pubspec:
+
+```yaml title="pubspec.yaml"
+dependencies:
+  replit_ui: ^0.4.0
+```
+
+That brings in the Flutter SDK, `material_ui` and `file_selector` — the
+flutter.dev plugin behind the composer's attach button. Nothing else.
+
+## Wire the theme
+
+The design tokens — colors and typography — install as a `ThemeExtension`:
+
+```dart title="main.dart"
+MaterialApp(
+  theme: ThemeData(extensions: [ReplitTheme.light()]),
+  darkTheme: ThemeData(
+    brightness: Brightness.dark,
+    extensions: [ReplitTheme.dark()],
+  ),
+)
+```
+
+<Aside type="tip">
+	Zero setup also works: when no `ReplitTheme` is installed, components fall
+	back to a preset matched to the ambient `ThemeData.brightness`.
+</Aside>
+
+The library bundles no fonts: prose inherits the host's text face, and code
+uses the platform monospace face. Replit-branded apps can bundle their
+licensed Diatype files, set `ThemeData(fontFamily: 'Diatype')`, and select
+`Diatype` and `Diatype Semi-Mono` through
+`ReplitTypography.standard.withFontFamily(...).withCodeFontFamily(...)`.
+
+The default light and dark palettes follow the
+[Replit brand colors](https://replit.com/brand).
+
+## Render a conversation
+
+Messages are plain data; `ReplitThread` draws them:
+
+```dart title="A three-role conversation"
+ReplitThread(
+  messages: [
+    ReplitMessageData.text(
+      id: '1',
+      role: ReplitMessageRole.user,
+      text: 'What is replit_ui?',
+    ),
+    ReplitMessageData.text(
+      id: '2',
+      role: ReplitMessageRole.assistant,
+      text: 'An open-source Flutter UI library to build production-grade Chat & AI assistant interfaces...',
+    ),
+    ReplitMessageData.text(
+      id: '3',
+      role: ReplitMessageRole.system,
+      text: 'Model changed to Sonnet',
+    ),
+  ],
+)
+```
+
+Streaming is data, not streams: as chunks arrive, rebuild with the updated
+message list and a `status` of `ReplitMessageStatus.streaming` — the thread
+animates the reveal.
+
+## Run the playground
+
+Every component has a live stage in the hosted
+[playground](https://replit_ui.asimawdah.com/playground) — variant pills and code
+snippets included. It is also in the repo to run locally:
+
+```bash
+cd playground && flutter run -d chrome
+```
+
+For a minimal starting point, the repo's `packages/replit_ui/example/` is the
+full chat screen from the README as a single-file app, platform runners
+checked in: `cd packages/replit_ui/example`, then
+`flutter run -d chrome --dart-define=GEMINI_API_KEY=...`.
+
+## Next
+
+<CardGrid>
+	<LinkCard
+		title="Theming"
+		description="The token system: three levels of ink, translucent washes on opaque grounds, and how the M3 mapping works."
+		href="/theming/"
+	/>
+	<LinkCard
+		title="Message & Thread"
+		description="Conversation rendering — roles, streaming, pending and error states."
+		href="/components/message-thread/"
+	/>
+</CardGrid>

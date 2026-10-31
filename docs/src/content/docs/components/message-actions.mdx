@@ -1,0 +1,80 @@
+---
+title: Message actions
+description: The action row under a message — copy, regenerate, edit, and feedback.
+sidebar:
+  order: 2
+---
+
+import ReplitDemo from '../../../components/ReplitDemo.astro';
+
+`ReplitMessageActions` is the muted icon row that lives under an assistant
+turn. The five shipped actions come as named constructors — `.copy`,
+`.regenerate`, `.edit`, `.thumbUp`, `.thumbDown` — each carrying its
+tooltip and callback, and the default constructor takes any `icon` for
+actions of your own. The row lays them out at the design's rhythm and
+reports the taps; what they do is entirely the host's business.
+
+## Action row
+
+An action without an `onPressed` renders muted and disabled. The thumbs
+carry a `selected` flag — making them exclusive is host state, not widget
+behavior:
+
+<ReplitDemo demo="message-actions" height={240} title="The action row" />
+
+```dart title="Copy, regenerate, edit, feedback"
+ReplitMessageActions(
+  actions: [
+    ReplitMessageAction.copy(tooltip: 'Copy', onPressed: () {}),
+    ReplitMessageAction.regenerate(tooltip: 'Regenerate', onPressed: () {}),
+    ReplitMessageAction.edit(tooltip: 'Edit'), // no onPressed → disabled
+    ReplitMessageAction.thumbUp(
+      tooltip: 'Good response',
+      selected: liked,
+      onPressed: toggleLike,
+    ),
+    ReplitMessageAction.thumbDown(
+      tooltip: 'Bad response',
+      selected: disliked,
+      onPressed: toggleDislike,
+    ),
+  ],
+)
+```
+
+## Under a message
+
+`ReplitMessage` takes the row in its `footer:` slot, placing it under the
+content at the design's spacing:
+
+```dart title="The footer slot"
+ReplitMessage(
+  message,
+  footer: ReplitMessageActions(
+    actions: [
+      ReplitMessageAction.copy(tooltip: 'Copy', onPressed: () {}),
+      ReplitMessageAction.regenerate(tooltip: 'Regenerate', onPressed: () {}),
+    ],
+  ),
+)
+```
+
+## Restyling
+
+`ReplitMessageActionsStyle` overrides the strip's inks without touching the
+global tokens: `iconColor`, `hoverIconColor`, `selectedColor`, and
+`hoverColor` (the wash behind a hovered action). Install one on
+`ReplitTheme.messageActionsStyle` for every actions row; the widget's
+`style` wins field by field.
+
+## Key API
+
+- `ReplitMessageAction.copy / .regenerate / .edit / .thumbUp / .thumbDown` —
+  the shipped actions; every one takes `tooltip`, `onPressed`, and
+  `selected` where it applies.
+- `ReplitMessageAction(icon: …)` — a custom action (share, retry,
+  bookmark): your `icon`, an optional `selectedIcon`, and the same
+  `tooltip` / `onPressed` / `selected`.
+- No `onPressed` → the action renders muted and ignores taps.
+- Tooltips are host-supplied strings — the package ships no copy, so
+  localization stays yours.

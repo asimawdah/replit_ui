@@ -1,0 +1,70 @@
+---
+title: Thinking indicator
+description: The animated Replit mark with a shimmering label — active and settled.
+sidebar:
+  order: 5
+---
+
+import ReplitDemo from '../../../components/ReplitDemo.astro';
+
+`ReplitThinkingIndicator` is the animated Replit mark shown while a
+reply is pending, its host-supplied label shimmering beside it. You mostly
+get it for free: a message with `ReplitMessageStatus.pending` renders it
+automatically — pass `thinkingLabel:` to `ReplitMessage` or `ReplitThread` and
+the library does the rest. It is also available standalone for custom
+waiting states.
+
+## Thinking
+
+<ReplitDemo demo="thinking-indicator" variant="active" height={180} title="Thinking" />
+
+```dart title="Pending"
+ReplitThinkingIndicator(label: 'Thinking…')
+```
+
+## Settled
+
+`active: false` is the settled state — the same line, holding still. Keep
+it on screen after thinking ends and swap the label you already own; the
+line becomes a quiet record of the work:
+
+<ReplitDemo demo="thinking-indicator" variant="settled" height={180} title="Settled" />
+
+```dart title="The same line, settled"
+// active: false holds the line still — keep it on screen after
+// thinking ends and swap the label you already own.
+ReplitThinkingIndicator(
+  active: false,
+  label: 'Thought about it',
+)
+```
+
+## Glyph only
+
+Without a label it is just the animated mark, sized and colored to taste.
+`semanticLabel` keeps it announced to screen readers — the package ships
+no strings of its own:
+
+```dart title="Just the mark"
+// No label: just the animated mark. semanticLabel keeps it
+// announced; the package ships no strings.
+ReplitThinkingIndicator(
+  size: 24,
+  color: context.replitColors.primary,
+  semanticLabel: 'Thinking',
+)
+```
+
+## Key API
+
+- `label` — shimmer-treated while `active`, static once settled.
+- `active` — `false` freezes the mark and the label in place; the
+  platform's reduced-motion setting renders static too.
+- `size` (14) and `color` — the mark in any form; it keeps the supplied
+  orange while active and uses muted ink when settled. A custom color tints
+  either state. The label always draws in muted ink.
+- `duration` — one sprite cycle (2400ms).
+- `semanticLabel` — keeps the glyph-only form announced to screen
+  readers.
+- In a thread: set message `status` to `pending` and pass `thinkingLabel:`
+  — no manual wiring.

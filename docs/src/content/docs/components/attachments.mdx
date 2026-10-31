@@ -1,0 +1,205 @@
+---
+title: Attachments
+description: Attachment tiles for the composer and sent messages, with a full-screen preview.
+sidebar:
+  order: 9
+---
+
+import ReplitDemo from '../../../components/ReplitDemo.astro';
+
+`ReplitAttachment` models one attachment — its `id`, an optional
+`thumbnail`, the file `kind` shown in the type pill, and a `label`.
+`ReplitAttachmentGroup` lays a set of them out for the composer or a
+message. A tile with an image opens the full-screen preview — zoom,
+paging — on tap; one without, a document, draws its ground and the pill
+and stays inert rather than opening an empty preview. Tiles stand at the
+design's 80px on a 16px corner — 64 and 12 on phones, resolved from the
+theme's platform.
+
+## Scrolling row
+
+The default layout is one row that scrolls, no scrollbar. With `onRemove`
+each tile grows a remove button — it fades in on hover and stays visible
+on touch:
+
+<ReplitDemo demo="attachments" variant="tiles" height={300} title="Attachment tiles" />
+
+```dart title="The composer's pending row"
+ReplitAttachmentGroup(
+  // The default: one row that scrolls, no scrollbar.
+  attachments: [
+    for (final picked in pending)
+      ReplitAttachment(
+        id: picked.id,
+        thumbnail: FileImage(picked.file),
+        kind: picked.extension,
+        label: picked.name,
+      ),
+  ],
+  onRemove: (id) => detach(id),
+  removeTooltip: 'Remove attachment',
+)
+```
+
+## Documents
+
+No `thumbnail` means no preview — the pill identifies the file:
+
+```dart title="Documents beside a photo"
+ReplitAttachmentGroup(
+  layout: ReplitAttachmentLayout.wrap,
+  attachments: [
+    // No thumbnail: the tile draws its ground and the type pill, and
+    // stays inert rather than opening an empty preview.
+    ReplitAttachment(id: 'c', kind: 'PDF', label: 'contract.pdf'),
+    ReplitAttachment(id: 'n', kind: 'DOCX', label: 'notes.docx'),
+    ReplitAttachment(
+      id: 'd',
+      thumbnail: AssetImage('assets/dusk.png'),
+      kind: 'PNG',
+      label: 'dusk-ridge.png',
+    ),
+  ],
+)
+```
+
+## Read-only
+
+Without an `onRemove` callback the tiles are read-only. Tapping an image
+still opens the preview — pass `onTap` only to *replace* that, and call
+`showReplitAttachmentPreview` yourself if you want the preview alongside
+your own handling:
+
+```dart title="Wrap layout, no remove"
+ReplitAttachmentGroup(
+  layout: ReplitAttachmentLayout.wrap,
+  // No onRemove → read-only. Tapping still opens the preview: pass onTap
+  // only to replace it, and call showReplitAttachmentPreview yourself to
+  // keep it alongside your own handling.
+  attachments: sent,
+)
+```
+
+## In a message
+
+Attachments travel as message parts: `ReplitAttachmentPart` in
+`ReplitMessageData.parts`. In a **user** turn they lift out of the bubble
+and sit above it in a row from the trailing edge — each image a 116
+square tile, cover-cropped, under an `outline` hairline that firms up
+to `outlineVariant` while hovered; files as the tiles above — so the
+turn reads the way a chat does: the file, then what was said about it.
+A picture with no caption draws no bubble at all. Assistant turns keep
+the tiles inline. Nothing to wire — tapping a sent image opens the
+preview:
+
+```dart title="An attachment part"
+ReplitMessage(
+  ReplitMessageData(
+    id: 'm1',
+    role: ReplitMessageRole.user,
+    parts: [
+      ReplitAttachmentPart([
+        ReplitAttachment(id: 'a', thumbnail: NetworkImage(url), kind: 'JPG'),
+      ]),
+      ReplitTextPart('What is the peak on the left?'),
+    ],
+  ),
+  // Nothing to wire: tapping a sent attachment opens the preview.
+)
+```
+
+## In a composer
+
+The composer renders the pending row above its field from the same model:
+
+<ReplitDemo demo="attachments" variant="composer" height={360} title="Attachments in the composer" />
+
+```dart title="Pending attachments"
+ReplitComposer(
+  attachments: attachments,
+  onRemoveAttachment: (id) => setState(
+    () => attachments = attachments.where((a) => a.id != id).toList(),
+  ),
+  removeAttachmentTooltip: 'Remove attachment',
+  onSend: send,
+  leadingActions: [
+    ReplitMenu(icon: Icons.add, entries: addOptions,
+        onSelected: pickAttachment),
+  ],
+)
+```
+
+## Getting them
+
+Everything above renders attachments you already hold. The package
+produces them too:
+
+- [`showReplitAttachmentPicker`](/components/composer/#attach) — the
+  platform's file dialog from anywhere: the design's "+" menu, your own
+  button. Hands back decoded `ReplitAttachment`s and never throws.
+- [`ReplitComposer.onAttachmentsPicked`](/components/composer/#attach) —
+  a built-in attach button that opens the same dialog.
+- [`ReplitChatView.onAttachmentsDropped`](/components/chat-view/#drag-and-drop)
+  — the surface accepts drops (web only) and hands back the same.
+- [`ReplitComposer.onAttachmentsDropped`](/components/composer/#drop-on-the-card)
+  — the same drop, scoped to the composer card instead of the page.
+- [`ReplitComposer.onAttachmentsPasted`](/components/composer/#paste) — an
+  image pasted into the field (web only).
+
+All of them take a `ReplitAttachmentOptions` saying what is accepted and
+how it is decoded, and report what they refused through
+`onAttachmentRejected`. None holds anything: the attachments come back to
+you, and you pass them to `ReplitComposer.attachments`.
+
+### Sending them
+
+An attachment the package produced carries the file it read on `bytes`,
+with `mimeType` alongside — the platform's own type where it reports one
+(the web does), and the extension's where it doesn't (every native picker
+hands back a path and nothing else). That is what you upload with:
+
+```dart title="Attached images, on their way to a model"
+for (final part in message.parts)
+  if (part is ReplitAttachmentPart)
+    for (final attachment in part.attachments)
+      if (attachment.bytes case final bytes?)
+        parts.add({
+          'inlineData': {
+            'mimeType': attachment.mimeType,
+            'data': base64Encode(bytes),
+          },
+        });
+```
+
+replit_ui never reads either field — it draws `thumbnail` and stops. They
+exist because attaching a file is half a feature without a way to send
+it. Building a `ReplitAttachment` by hand from a URL leaves both null;
+building one from bytes you already have (Android's keyboard media, say)
+should fill them in, so it uploads like a picked file.
+
+The bytes are the *encoded* file, held for as long as the attachment is:
+a pending strip keeps every original in memory until it is sent or
+removed. That was already true of the thumbnail's `MemoryImage` — the
+field hands you the same list rather than a second copy.
+
+The [example app](https://github.com/asimawdah/replit_ui/tree/main/packages/replit_ui/example)
+does exactly this against Gemini.
+
+## Key API
+
+- `ReplitAttachment` — `id`, `thumbnail` (any `ImageProvider`), `preview`
+  (a full-resolution image for the viewer; defaults to `thumbnail`),
+  `kind`, `label`, `tooltip` (falls back to `label`), and — for anything
+  the package read itself — `bytes` and `mimeType`.
+- `ReplitAttachmentGroup` — `attachments`, `layout`
+  (`ReplitAttachmentLayout.scroll` default / `.wrap`), `onRemove`, `onTap`,
+  and the host-supplied tooltips, plus the tile metrics: `size` (80; 64
+  on phones), `tileRadius` (16; 12), `spacing` (8), `padding`. Callbacks
+  report ids, never indexes, so ids must be unique within the group —
+  asserted in debug.
+- `showReplitAttachmentPicker` — the platform's file dialog, callable from
+  any control; takes `ReplitAttachmentOptions` and an `onRejected`.
+- `showReplitAttachmentPreview` — the full-screen viewer, callable directly
+  when you override `onTap` or `onAttachmentTap`. A tap on the frosted
+  space around the picture closes it, as do the close button and Escape;
+  the arrow keys page.

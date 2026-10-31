@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://replit_ui.asimawdah.dev/sitemap-index.xml
+/home/asim/Downloads/replit-complete-brand-kit/replit-brand-assets
