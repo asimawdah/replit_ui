@@ -14,6 +14,8 @@
 Flutter UI library and optional streaming SDK for AI chat interfaces.
 </p>
 
+![The replit_ui chat surface](packages/replit_ui/assets/chat_zero_light.png)
+
 ## Packages
 
 This repository is a Dart pub workspace. `replit_ui` includes both the
