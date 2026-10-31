@@ -9,7 +9,6 @@ dist/
 .astro/
 
 # built at build time from the repo (see scripts/)
-public/playground/
 public/api/
 
 # dependencies
