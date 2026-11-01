@@ -687,14 +687,20 @@ class _ReplitChatViewState extends State<ReplitChatView> {
     // it — a phone would otherwise stand the composer 24 above a 34pt
     // indicator, which reads as a gap the design never drew. Simulated
     // phone frames report no inset and keep the full 24.
+    //
+    // The keyboard is a separate inset: when the software keyboard is open,
+    // the Scaffold has already moved the content above it. Subtracting the
+    // active keyboard inset keeps the composer flush with the keyboard
+    // instead of leaving a large blank strip under the input.
     final designBottom = compact ? _bottomInsetCompact : _bottomInsetWide;
+    final keyboardBottom = MediaQuery.viewInsetsOf(context).bottom;
     final padding =
         widget.padding ??
         EdgeInsetsDirectional.fromSTEB(
           _sideInset,
           0,
           _sideInset,
-          math.max(0, designBottom - safeBottom),
+          math.max(0, designBottom - safeBottom - keyboardBottom),
         );
 
     final column = <Widget>[];
