@@ -54,7 +54,6 @@
 | [`ReplitAttachmentPreview`](https://replit.asimawdah.com/components/attachments) | Full-screen image viewer with zoom and paging |
 | [`ReplitDropTarget`](https://replit.asimawdah.com/components/chat-view) | File-drop detection for any subtree (web) — decoded attachments out, hover state for your own treatment |
 | [`ReplitSuggestion`](https://replit.asimawdah.com/components/suggestions) / [`ReplitSuggestionGroup`](https://replit.asimawdah.com/components/suggestions) | Prompt starters — plain or outlined; scroll, wrap, or column layouts |
-| [`ReplitGreeting`](https://replit.asimawdah.com/components/greeting) | Zero-state headline |
 | [`ReplitTheme`](https://replit.asimawdah.com/theming) | Design tokens (colors and typography) as a `ThemeExtension`, with light and dark presets |
 
 ## Getting started

@@ -83,8 +83,7 @@ enum PlaygroundItem {
     'Suggestions',
     PhosphorIconsRegular.lightbulb,
     'replit_suggestion.dart',
-  ),
-  greeting('Greeting', PhosphorIconsRegular.handWaving, 'replit_greeting.dart');
+  );
 
   const PlaygroundItem(
     this.label,

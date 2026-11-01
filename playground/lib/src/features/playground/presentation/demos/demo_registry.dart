@@ -8,7 +8,6 @@ import 'composer_demo.dart';
 import 'confirmation_demo.dart';
 import 'error_state_demo.dart';
 import 'full_chat_demo.dart';
-import 'greeting_demo.dart';
 import 'markdown_demo.dart';
 import 'message_actions_demo.dart';
 import 'message_demo.dart';
@@ -60,7 +59,6 @@ Widget demoFor(PlaygroundItem item, {String? variant}) {
       variant: variant,
     ),
     PlaygroundItem.suggestions => SuggestionsDemo(key: key, variant: variant),
-    PlaygroundItem.greeting => GreetingDemo(key: key, variant: variant),
   };
 }
 
@@ -164,10 +162,6 @@ List<(String, String)> variantsFor(PlaygroundItem item) {
       ('scroll', 'Scroll'),
       ('wrap', 'Wrap'),
     ],
-    PlaygroundItem.greeting => const [
-      ('icon', 'With icon'),
-      ('text', 'Text only'),
-    ],
     _ => const [],
   };
 }
@@ -208,7 +202,6 @@ String snippetFor(PlaygroundItem item, {String? variant}) {
     PlaygroundItem.shimmerText => shimmerTextSnippet(variant),
     PlaygroundItem.thinkingIndicator => thinkingIndicatorSnippet(variant),
     PlaygroundItem.suggestions => suggestionsSnippet(variant),
-    PlaygroundItem.greeting => greetingSnippet(variant),
   };
 }
 
