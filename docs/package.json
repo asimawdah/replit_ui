@@ -9,6 +9,7 @@
     "build": "astro build",
     "playground": "bash scripts/build-playground.sh",
     "build:site": "npm run playground && npm run build",
+    "deploy:pages": "npm run build:site && npx --yes wrangler@4 pages deploy dist",
     "preview": "astro preview",
     "astro": "astro"
   },

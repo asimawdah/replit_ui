@@ -21,14 +21,23 @@ URLs, one per component) and embedded on component pages as live demos via
 (`/playground/index.html?embed=<demo>&variant=<v>&theme=<light|dark>`).
 `npm run build:site` chains playground + docs into one `dist/`.
 
-Those component paths are routes inside the app, not files, so they need a
-rewrite: `public/_redirects` sends `/playground/*` to
-`/playground/index.html` on Cloudflare Pages, and the `playground-dev-index`
-integration in `astro.config.mjs` does the same for `npm run dev`. Removing
-either makes deep links serve the 404 page.
+The site is deployable to Cloudflare Pages. The Wrangler configuration uses
+`dist/` as the Pages output directory; deploy from this directory after
+installing the npm dependencies and ensuring Flutter is available:
 
-Deploys to Cloudflare Pages from `.github/workflows/publish.yml` — every
-release tag ships the site (playground included) alongside the pub.dev
-publish, and `workflow_dispatch` redeploys it on its own.
+```bash
+npm run deploy:pages
+```
+
+Create a Cloudflare Pages project named `replit-ui` first, or change `name`
+in `wrangler.jsonc` to match your existing Pages project. Authenticate with
+Wrangler beforehand using `npx wrangler login`.
+
+The playground component paths are routes inside the app, not files. The
+explicit rules in `public/_redirects` keep deep links working on Cloudflare
+Pages, and `public/_headers` enables cross-origin isolation for the standalone
+playground so its multithreaded Wasm renderer can run. The
+`playground-dev-index` integration in `astro.config.mjs` handles the routes
+for `npm run dev`.
 
 Planned: `dart doc` output under `public/api/`.
