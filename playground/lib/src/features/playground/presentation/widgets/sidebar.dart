@@ -94,6 +94,39 @@ class Sidebar extends StatelessWidget {
                     onTap: () =>
                         openExternal('https://pub.dev/packages/replit_ui'),
                   ),
+                  Padding(
+                    padding: EdgeInsetsDirectional.only(
+                      start: compact ? 0 : 10,
+                      top: 10,
+                    ),
+                    child: Tooltip(
+                      message: 'Run by Replit',
+                      child: Row(
+                        mainAxisAlignment: compact
+                            ? MainAxisAlignment.center
+                            : MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            PhosphorIconsRegular.terminal,
+                            size: 13,
+                            color: colors.onSurfaceMuted,
+                          ),
+                          if (!compact) ...[
+                            const SizedBox(width: 8),
+                            Text(
+                              'Run by Replit',
+                              style: shellText(
+                                context,
+                                size: 11.5,
+                                weight: FontWeight.w500,
+                                color: colors.onSurfaceMuted,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
